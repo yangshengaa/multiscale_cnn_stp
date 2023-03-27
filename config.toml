@@ -1,0 +1,4 @@
+['exp']
+data_dir='data/'
+result_dir='img/'
+model_dir='model/'
