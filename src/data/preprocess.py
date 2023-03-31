@@ -1,7 +1,8 @@
 """
 data preprocessing: convert each index csv into three files: 
 - X.npy: # shape: (num_samples, 100, 3)
-- y.npy: # shape: (num_sampes,)
+- y.npy: # shape: (num_sampes,):
+    use (0, 1, 2) to denote (no trend, upwards, downwards) respectively
 - dates.npy: # a serialized file 
 """
 
@@ -62,7 +63,8 @@ def get_features_and_targets(df: pd.DataFrame) -> Tuple[np.ndarray, np.ndarray, 
     close_price = df['close']
     close_change = ((close_price.rolling(args.k).mean().shift(-args.k) - close_price) / close_price).dropna()[dates] 
     y = (close_change.abs() > args.thr) * ((close_change > 0) * 2 - 1) # (assign labels -1, 0, 1)
-    y = y.to_numpy()
+    y = y % 3   # change label -1 to label 2
+    y = y.to_numpy().astype(int) 
 
     return X, y, dates
 
