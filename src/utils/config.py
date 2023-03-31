@@ -8,8 +8,7 @@ import toml
 from typing import Dict
 from pathlib import Path
 
-PACKAGE_DIR = Path(__file__).parent.parent.parent.absolute()
-
+PACKAGE_DIR = '../../'
 
 def load_config(tag="simulation") -> Dict[str, str]:
     """load toml file"""
@@ -23,8 +22,8 @@ def load_config(tag="simulation") -> Dict[str, str]:
     assert "model_dir" in config, "Did not find model_dir"
     assert "result_dir" in config, "Did not find result_dir"
 
-    for _, path in config.items():
-        if not os.path.exists(path):
-            os.mkdir(path)
+    # for _, path in config.items():
+    #     if not os.path.exists(path):
+    #         os.mkdir(path)
 
     return config

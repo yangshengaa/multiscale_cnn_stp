@@ -18,6 +18,17 @@ pip install --no-cache-dir statsmodels seaborn scipy pillow xgboost tqdm
 pip install -e .
 ```
 
+## Preprocess
+
+At root, run:
+
+```bash
+cd src/data
+python preprocess.py --standardize
+```
+
+See other arguments in [preprocess.py](src/data/preprocess.py).
+
 ## Referecnes
 
 - [MTDNN](https://www.ijcai.org/proceedings/2020/0628.pdf)
