@@ -131,3 +131,6 @@ dmypy.json
 # results
 result/*
 !result/.gitkeep
+
+# data
+data/*
