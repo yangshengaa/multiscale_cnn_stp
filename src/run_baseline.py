@@ -56,7 +56,10 @@ data, targets, dates = read_data(args.data, paths['data_dir'])
 
 def train():
     """train loop"""
-    for period_dict, target_dict, dates_dict in ts_split(data, targets, dates, args.train, args.val, args.test, args.K, make_tabular=True):
+    for period_dict, target_dict, dates_dict in ts_split(
+            data, targets, dates, args.train, args.val, args.test, args.K, 
+            make_tabular=True, return_tensor=False
+        ):
         period_start_date = dates_dict['train'][0][0]
         period_end_date = dates_dict['test'][-1]
         print(f'====== {period_start_date} to {period_end_date} =======')

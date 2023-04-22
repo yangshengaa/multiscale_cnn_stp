@@ -11,6 +11,7 @@ import torch.nn as nn
 class MLP(nn.Module):
     """vanilla multilayer perceptron"""
     def __init__(self, input_dim: int, hidden_dims: List[int], output_dim: int, nl: nn.Module=nn.ReLU()) -> None:
+        super().__init__()
         # tag
         self.input_dim = input_dim 
         self.hidden_dims = hidden_dims
