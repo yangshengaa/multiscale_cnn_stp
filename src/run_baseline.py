@@ -45,7 +45,7 @@ args = parser.parse_args()
 
 # load path 
 paths = load_config(args.tag)
-model_name = f'mlr_{args.data}'
+model_name = f'mlr_{args.data}_tr{args.train}_va{args.val}_te{args.test}'
 model_path = os.path.join(paths['model_dir'], model_name)
 os.makedirs(model_path, exist_ok=True)
 result_path = os.path.join(paths['result_dir'], model_name)
