@@ -29,6 +29,16 @@ python preprocess.py --standardize
 
 See other arguments in [preprocess.py](src/data/preprocess.py).
 
+## Train
+
+To train baseline, run:
+
+```bash
+python src/run_baseline.py --data 000016
+```
+
+See other argument in [src/run_baseline](src/run_baseline.py)
+
 ## Referecnes
 
 - [MTDNN](https://www.ijcai.org/proceedings/2020/0628.pdf)
