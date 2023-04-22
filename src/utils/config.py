@@ -4,11 +4,13 @@ parse config
 
 # load packages
 import os
+from pathlib import Path
 import toml
 from typing import Dict
 from pathlib import Path
 
-PACKAGE_DIR = '../../'
+# PACKAGE_DIR = '../../'
+PACKAGE_DIR = Path(__file__).parent.parent.parent.absolute()
 
 def load_config(tag="simulation") -> Dict[str, str]:
     """load toml file"""

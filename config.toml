@@ -1,4 +1,4 @@
 ['exp']
 data_dir='data/'
-result_dir='img/'
+result_dir='result/'
 model_dir='model/'

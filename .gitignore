@@ -134,3 +134,9 @@ result/*
 
 # data
 data/*
+
+# results
+model/*
+result/*
+notebook/*
+img/*

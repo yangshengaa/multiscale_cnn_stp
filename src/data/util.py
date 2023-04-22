@@ -11,10 +11,10 @@ import numpy as np
 # ============ methods ============
 def read_data(index_name: str, path: str) -> Tuple[np.ndarray, np.ndarray, List[str]]:
     """read from preprocessed path, return data, targets, and dates""" 
-    index_path = os.path.join(path, index_name)
+    index_path = os.path.join(path, 'preprocessed', index_name)
     data = np.load(os.path.join(index_path, 'X.npy'))
     targets = np.load(os.path.join(index_path, 'y.npy'))
-    with open(os.path.join(index_path, index_name), 'rb') as f:
+    with open(os.path.join(index_path, 'dates.pkl'), 'rb') as f:
         dates = pickle.load(f)
     
     return data, targets, dates
@@ -90,7 +90,7 @@ def ts_split(
 
         # also feed in "train_all": from start of this period to end of val
         period_dict['train_all'] = data[period_start_idx:cur_idx + train + val]
-        target_dict['train_all'] = data[period_start_idx:cur_idx + train + val]
+        target_dict['train_all'] = targets[period_start_idx:cur_idx + train + val]
 
         yield period_dict, target_dict, dates_dict
 
