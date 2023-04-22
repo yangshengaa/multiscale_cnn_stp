@@ -153,7 +153,7 @@ def train():
                 with torch.no_grad():
                     val_outputs = model(X_val)
                     val_pred = val_outputs.argmax(dim=1)
-                    cur_acc = accuracy_score(y_val, val_pred)
+                    cur_acc = accuracy_score(y_val.detach().cpu().numpy(), val_pred.detach().cpu().numpy())
                     cur_val_acc.append(cur_acc)
 
                 # print 
@@ -200,8 +200,8 @@ def train():
         with torch.no_grad():
             test_outputs = model(X_test)
             test_pred = test_outputs.argmax(dim=1)
-            test_acc = accuracy_score(y_test, test_pred)
-            test_f1 = f1_score(y_test, test_pred, average='macro')  # TODO: maybe weighted? need discussion
+            test_acc = accuracy_score(y_test.detach().cpu().numpy(), test_pred.detach().cpu().numpy())
+            test_f1 = f1_score(y_test.detach().cpu().numpy(), test_pred.detach().cpu().numpy(), average='macro')  # TODO: maybe weighted? need discussion
             print(f"test metrics: acc = {test_acc:.4f}, f1 = {test_f1:.4f}")
 
         # log 
