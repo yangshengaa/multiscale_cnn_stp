@@ -44,7 +44,7 @@ parser.add_argument("--model", type=str, default='CNN', choices=['MLP', "CNN"], 
 parser.add_argument("--hidden-dims", nargs="+", type=int, default=[1000], help='hidden layer dimensions')
 parser.add_argument("--nl", type=str, default="ReLU", help='the nonlinearity')
 parser.add_argument("--scale", type=int, default=1, help='downsampling scale for CNN')
-# TODO: architecture param for CNN
+parser.add_argument("--num-filters", type=int, default=32, help='number of filters for CNN')
 
 # train
 parser.add_argument("--opt", type=str, default='Adam', help='type of optimizer')
@@ -100,7 +100,7 @@ def get_model() -> nn.Module:
         model = MLP(input_dim, args.hidden_dims, output_dim, nl).to(device)
     elif args.model == "CNN":
         window_size, num_features, output_dim = 100, 3, 3
-        model = CNN(window_size, num_features, output_dim, args.scale).to(device)
+        model = CNN(window_size, num_features, args.num_filters, output_dim, args.scale, nl).to(device)
     else:
         raise NotImplementedError()
     
