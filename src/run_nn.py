@@ -26,7 +26,7 @@ import torch.nn as nn
 
 # load file 
 from data import read_data, ts_split
-from model import MLP
+from model import MLP, CNN
 from utils import load_config, log_predictions, log_nn_params, log_baseline_params
 
 # ===== arguments =====
@@ -43,6 +43,7 @@ parser.add_argument("--data", type=str,
 parser.add_argument("--model", type=str, default='CNN', choices=['MLP', "CNN"], help='the choice of neural network models')
 parser.add_argument("--hidden-dims", nargs="+", type=int, default=[1000], help='hidden layer dimensions')
 parser.add_argument("--nl", type=str, default="ReLU", help='the nonlinearity')
+parser.add_argument("--scale", type=int, default=1, help='downsampling scale for CNN')
 # TODO: architecture param for CNN
 
 # train
@@ -98,7 +99,8 @@ def get_model() -> nn.Module:
         input_dim, output_dim = 300, 3
         model = MLP(input_dim, args.hidden_dims, output_dim, nl).to(device)
     elif args.model == "CNN":
-        raise NotImplementedError()
+        num_features, output_dim = 3, 3
+        model = CNN(num_features, output_dim, args.scale).to(device)
     else:
         raise NotImplementedError()
     
