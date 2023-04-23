@@ -24,12 +24,12 @@ class CNN(nn.Module):
             conv2_list.append(nn.Conv2d(n_filters//2, n_filters, kernel_size=(3, 1), padding='same'))
             conv3_list.append(nn.Conv2d(n_filters, n_filters, kernel_size=(3, 1), padding='same'))
 
-        self.conv1_list = conv1_list
-        self.conv2_list = conv2_list
-        self.conv3_list = conv3_list
+        self.conv1_list = nn.ModuleList(conv1_list)
+        self.conv2_list = nn.ModuleList(conv2_list)
+        self.conv3_list = nn.ModuleList(conv3_list)
         self.pool = nn.MaxPool2d(kernel_size=(2, 1))
-        self.fc = nn.Linear(s*n_filters, output_dim)
-        self.gru = nn.GRU(s*n_filters, s*n_filters, batch_first=True)
+        self.fc = nn.Linear(scale*n_filters, output_dim)
+        self.gru = nn.GRU(scale*n_filters, scale*n_filters, batch_first=True)
 
     def forward(self, X: torch.Tensor) -> torch.Tensor:
         feature_list = []
