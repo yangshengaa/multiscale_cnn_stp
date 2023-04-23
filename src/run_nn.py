@@ -99,8 +99,8 @@ def get_model() -> nn.Module:
         input_dim, output_dim = 300, 3
         model = MLP(input_dim, args.hidden_dims, output_dim, nl).to(device)
     elif args.model == "CNN":
-        num_features, output_dim = 3, 3
-        model = CNN(num_features, output_dim, args.scale).to(device)
+        window_size, num_features, output_dim = 100, 3, 3
+        model = CNN(window_size, num_features, output_dim, args.scale).to(device)
     else:
         raise NotImplementedError()
     
@@ -180,7 +180,7 @@ def train():
         model = get_model()
 
         # initialize optimizer
-        opt = getattr(torch.optim, args.opt)(model.parameters(), lr=args.lr, weight_decay=wd)
+        opt = getattr(torch.optim, args.opt)(model.parameters(), lr=args.lr, weight_decay=args.wd)
 
         # train 
         loop = range(args.epochs)
