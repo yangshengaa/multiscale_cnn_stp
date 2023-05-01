@@ -10,7 +10,7 @@ warnings.filterwarnings("ignore")
 
 import numpy as np
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import f1_score, accuracy_score
+from sklearn.metrics import f1_score, accuracy_score, roc_auc_score
 
 # load file 
 from data import read_data, ts_split
@@ -94,7 +94,8 @@ def train():
         test_y = target_dict['test']
         test_acc = accuracy_score(test_y, test_pred)
         test_f1 = f1_score(test_y, test_pred, average='macro')  # TODO: maybe weighted? need discussion
-        print(f"test metrics: acc = {test_acc:.4f}, f1 = {test_f1:.4f}")
+        test_roc_auc = roc_auc_score(test_y, mlr.predict_proba(period_dict['test']), multi_class = 'ovr')
+        print(f"test metrics: acc = {test_acc:.4f}, f1 = {test_f1:.4f}, roc_auc = {test_roc_auc:.4f}")
 
         # log 
         # save model hyperparam to 

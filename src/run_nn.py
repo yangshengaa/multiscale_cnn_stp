@@ -19,7 +19,7 @@ import argparse
 
 from tqdm import tqdm
 import numpy as np
-from sklearn.metrics import f1_score, accuracy_score
+from sklearn.metrics import f1_score, accuracy_score, roc_auc_score
 
 import torch 
 import torch.nn as nn
@@ -204,7 +204,10 @@ def train():
             test_pred = test_outputs.argmax(dim=1)
             test_acc = accuracy_score(y_test.detach().cpu().numpy(), test_pred.detach().cpu().numpy())
             test_f1 = f1_score(y_test.detach().cpu().numpy(), test_pred.detach().cpu().numpy(), average='macro')  # TODO: maybe weighted? need discussion
-            print(f"test metrics: acc = {test_acc:.4f}, f1 = {test_f1:.4f}")
+            #calculate ROC AUC score
+            test_prob = torch.softmax(test_outputs,dim=1).detach().cpu().numpy()
+            test_roc_auc = roc_auc_score(y_test.detach().cpu().numpy(),test_prob,multi_class = "ovr")
+            print(f"test metrics: acc = {test_acc:.4f}, f1 = {test_f1:.4f}, roc_auc= {test_roc_auc:.4f}")
 
         # log 
         # save model hyperparam (this is also fake now, need to decide what hyperparameters are to be tested)
