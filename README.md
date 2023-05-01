@@ -12,9 +12,9 @@ At root, run:
 conda create -n stp
 conda activate stp
 conda install python==3.8
-conda install pytorch torchvision torchaudio -c pytorch
+pip3 install torch torchvision torchaudio
 pip install --no-cache-dir autopep8 jupyterlab toml timebudget tensorboard torch-tb-profiler
-pip install --no-cache-dir statsmodels seaborn scipy pillow xgboost tqdm
+pip install --no-cache-dir statsmodels seaborn scipy pillow xgboost tqdm scikit-learn gpustat
 pip install -e .
 ```
 
@@ -37,7 +37,15 @@ To train baseline, run:
 python src/run_baseline.py --data 000016
 ```
 
-See other argument in [src/run_baseline](src/run_baseline.py)
+See other argument in [src/run_baseline.py](src/run_baseline.py)
+
+To train neural network (MLP or CNN), run:
+
+```bash
+python src/run_nn.py --data 000016 --model MLP --hidden-dims 20 20 --epochs 200 --verbose
+```
+
+(Check out the cool monitoring by using verbose). See more arguments in [src/run_nn.py](src/run_nn.py)
 
 ## Referecnes
 

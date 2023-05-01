@@ -17,8 +17,8 @@ import numpy as np
 import pandas as pd 
 
 # load file
-sys.path.append('../')
-from utils import load_config
+sys.path.append('../../')
+from src.utils import load_config 
 
 # ===== arguments =====
 parser = argparse.ArgumentParser()
