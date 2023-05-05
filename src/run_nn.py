@@ -39,9 +39,9 @@ parser.add_argument("--data", type=str,
 parser.add_argument("--model", type=str, default='CNN', choices=['MLP', "CNN"], help='the choice of neural network models')
 parser.add_argument("--hidden-dims", nargs="+", type=int, default=[1000], help='hidden layer dimensions')
 parser.add_argument("--nl", type=str, default="ReLU", help='the nonlinearity')
-parser.add_argument("--scale", type=int, default=1, help='downsampling scale for CNN')
+parser.add_argument("--scales", type=int, default=[1, 2, 4, 8], help='downsampling scale for CNN (hyperparameter)', nargs="+")
 parser.add_argument("--num-filters", type=int, default=32, help='number of filters for CNN')
-parser.add_argument("--gru-hidden", type=int, default=32, help='dimension of gru hidden state')
+parser.add_argument("--gru-hiddens", type=int, default=[32, 64, 128, 256], help='dimension of gru hidden state (hyperparameter)', nargs="+")
 
 # train
 parser.add_argument("--opt", type=str, default='Adam', help='type of optimizer')
@@ -76,7 +76,7 @@ torch.manual_seed(args.seed)
 
 # load path 
 paths = load_config(args.tag)
-model_name = f'{args.model}_{args.data}_tr{args.train}_va{args.val}_te{args.test}'
+model_name = f'{args.model}_{args.data}_tr{args.train}_va{args.val}_te{args.test}_lr{args.lr}_e{args.epochs}_seed{args.seed}'
 model_path = os.path.join(paths['model_dir'], model_name)
 os.makedirs(model_path, exist_ok=True)
 result_path = os.path.join(paths['result_dir'], model_name)
@@ -123,8 +123,8 @@ def train():
         # ! now it is just a fake cross validation
         best_val_avg_acc = 0
         best_scale, best_gru_hidden = None, None
-        scale_list = [1, 2, 3, 4, 5, 6, 7, 8]
-        gru_hidden_list = [32, 64, 128, 256]
+        scale_list = args.scales
+        gru_hidden_list = args.gru_hiddens
         for s in scale_list:
             for h in gru_hidden_list:
                 args.scale = s
