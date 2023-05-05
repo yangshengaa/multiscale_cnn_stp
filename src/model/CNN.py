@@ -10,7 +10,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class CNN(nn.Module):
-    def __init__(self, window_size=100, n_features=3, n_filters=32, output_dim=3, scale=1, nl=nn.ReLU()) -> None:
+    def __init__(self, window_size=100, n_features=3, n_filters=32, hidden_dim=32, output_dim=3, scale=1, nl=nn.ReLU()) -> None:
         super(CNN, self).__init__()
         self.scale = scale
         self.window_size = window_size
@@ -28,8 +28,8 @@ class CNN(nn.Module):
         self.conv2_list = nn.ModuleList(conv2_list)
         self.conv3_list = nn.ModuleList(conv3_list)
         self.pool = nn.MaxPool2d(kernel_size=(2, 1))
-        self.fc = nn.Linear(scale*n_filters, output_dim)
-        self.gru = nn.GRU(scale*n_filters, scale*n_filters, batch_first=True)
+        self.gru = nn.GRU(scale * n_filters, hidden_dim, batch_first=True)
+        self.fc = nn.Linear(hidden_dim, output_dim)
 
     def forward(self, X: torch.Tensor) -> torch.Tensor:
         feature_list = []
