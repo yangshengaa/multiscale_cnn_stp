@@ -27,7 +27,7 @@ import torch.nn as nn
 # load file 
 from data import read_data, ts_split
 from model import MLP, CNN
-from utils import load_config, log_predictions, log_nn_params, log_baseline_params
+from utils import load_config, log_predictions, log_nn_weights, log_baseline_params
 
 # ===== arguments =====
 parser = argparse.ArgumentParser()
@@ -43,7 +43,14 @@ parser.add_argument("--data", type=str,
 parser.add_argument("--model", type=str, default='CNN', choices=['MLP', "CNN"], help='the choice of neural network models')
 parser.add_argument("--hidden-dims", nargs="+", type=int, default=[1000], help='hidden layer dimensions')
 parser.add_argument("--nl", type=str, default="ReLU", help='the nonlinearity')
+
+# TODO: change the following argument to be a list:
+# TODO: parser.add_argument("--scales", type=int, default=[1], help='downsampling scale for CNN', nargs="+")
+# TODO: do this for all hyperparameter we are searching for: scales, gru-hiddens, and optionally the kernel_sizes
 parser.add_argument("--scale", type=int, default=1, help='downsampling scale for CNN')
+
+
+# TODO: add a parameter called gru-hiddens, with default number the current one we have
 parser.add_argument("--num-filters", type=int, default=32, help='number of filters for CNN')
 
 # train
@@ -89,6 +96,7 @@ os.makedirs(result_path, exist_ok=True)
 data, targets, dates = read_data(args.data, paths['data_dir'])
 loss_func = nn.CrossEntropyLoss()
 
+# TODO: modify function signiture, see comments below 
 def get_model() -> nn.Module:
     """retrieve model according to parameters"""
     # get nonlinearity 
@@ -121,7 +129,7 @@ def train():
         # use average validation accuracy to pick the best hyperparameter
         # ! now it is just a fake cross validation
         val_avg_acc = []
-        for wd in [args.wd]:  # TODO: figure out what hyperparameters want to be tested
+        for wd in [args.wd]:  # TODO: for loop on scale, gru-hidden, and optionally kernel size (think about an elegant way to write for loop)
             cur_val_acc = []
             for fold, (X_train, X_val, y_train, y_val) in enumerate(zip(
                     period_dict['train'], period_dict['val'], target_dict['train'], target_dict['val']
@@ -130,7 +138,11 @@ def train():
                 X_train, X_val, y_train, y_val = X_train.to(device), X_val.to(device), y_train.to(device), y_val.to(device)
 
                 # get model 
-                model = get_model()
+                # TODO: now since we are actually doing hyperparameter search, 
+                # TODO: it may benefit changing this to get_model(args), and args are locally modified
+                # TODO: for example, first duck type args by args.gru_hidden = cur_gru_hidden
+                # TODO: and then pass in model = get_model(args)
+                model = get_model() 
 
                 # initialize optimizer
                 opt = getattr(torch.optim, args.opt)(model.parameters(), lr=args.lr, weight_decay=wd)
@@ -203,7 +215,7 @@ def train():
             test_outputs = model(X_test)
             test_pred = test_outputs.argmax(dim=1)
             test_acc = accuracy_score(y_test.detach().cpu().numpy(), test_pred.detach().cpu().numpy())
-            test_f1 = f1_score(y_test.detach().cpu().numpy(), test_pred.detach().cpu().numpy(), average='macro')  # TODO: maybe weighted? need discussion
+            test_f1 = f1_score(y_test.detach().cpu().numpy(), test_pred.detach().cpu().numpy(), average='macro')
             #calculate ROC AUC score
             test_prob = torch.softmax(test_outputs,dim=1).detach().cpu().numpy()
             test_roc_auc = roc_auc_score(y_test.detach().cpu().numpy(),test_prob,multi_class = "ovr")
@@ -212,8 +224,9 @@ def train():
         # log 
         # save model hyperparam (this is also fake now, need to decide what hyperparameters are to be tested)
         log_baseline_params(best_param, period_start_date, period_end_date, model_path)
+        # TODO: now write another function call log_nn_parms(args, period_start_date, period_end_date, model_path)
         # the following line is memory intensive
-        if args.log_weights: log_nn_params(model, period_start_date, period_end_date, model_path)
+        if args.log_weights: log_nn_weights(model, period_start_date, period_end_date, model_path)
         log_predictions(test_pred.detach().cpu().numpy(), dates_dict['test'], result_path)
         print()
 

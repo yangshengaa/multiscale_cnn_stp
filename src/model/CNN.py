@@ -9,6 +9,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+# TODO: add arguments of gru_hidden, and optionally kernel_size
 class CNN(nn.Module):
     def __init__(self, window_size=100, n_features=3, n_filters=32, output_dim=3, scale=1, nl=nn.ReLU()) -> None:
         super(CNN, self).__init__()
