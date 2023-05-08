@@ -12,7 +12,7 @@ At root, run:
 conda create -n stp
 conda activate stp
 conda install python==3.8
-pip3 install torch torchvision torchaudio
+pip3 install torch torchvision torchaudio torchsummary
 pip install --no-cache-dir autopep8 jupyterlab toml timebudget tensorboard torch-tb-profiler
 pip install --no-cache-dir statsmodels seaborn scipy pillow xgboost tqdm scikit-learn gpustat
 pip install -e .

@@ -45,7 +45,28 @@ def log_baseline_params(best_c: float, start_date: str, end_date: str, model_pat
     log_df.to_csv(save_name, index=False)
 
 # ============ nn ===============
-def log_nn_params(model: nn.Module, start_date: str, end_date: str, model_path: str):
+
+def log_nn_params(best_scale, best_gru_hidden, start_date: str, end_date: str, model_path: str):
+    """
+    log nn params
+    :param selected_args: the selected arguments to log
+    """
+    save_name = os.path.join(model_path, 'hyperparam.csv')
+    new_df = pd.DataFrame([[start_date, end_date, best_scale, best_gru_hidden]], columns=['start_date', 'end_date', 'scale', 'gru_hidden'], )
+
+    # build on previous
+    if os.path.exists(save_name):
+        log_df = pd.read_csv(save_name)
+        # append new dates
+        log_df = pd.concat((log_df, new_df))
+    else:
+        log_df = new_df
+    # save
+    log_df.to_csv(save_name, index=False)
+
+
+# ============ nn ===============
+def log_nn_weights(model: nn.Module, start_date: str, end_date: str, model_path: str):
     """store model weights"""
     save_path = os.path.join(model_path, 'weights')
     if not os.path.exists(save_path):
