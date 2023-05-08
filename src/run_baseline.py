@@ -10,7 +10,7 @@ warnings.filterwarnings("ignore")
 
 import numpy as np
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import f1_score, accuracy_score
+from sklearn.metrics import f1_score, accuracy_score, roc_auc_score
 
 # load file 
 from data import read_data, ts_split
@@ -45,7 +45,7 @@ args = parser.parse_args()
 
 # load path 
 paths = load_config(args.tag)
-model_name = f'mlr_{args.data}'
+model_name = f'mlr_{args.data}_tr{args.train}_va{args.val}_te{args.test}'
 model_path = os.path.join(paths['model_dir'], model_name)
 os.makedirs(model_path, exist_ok=True)
 result_path = os.path.join(paths['result_dir'], model_name)
@@ -56,7 +56,10 @@ data, targets, dates = read_data(args.data, paths['data_dir'])
 
 def train():
     """train loop"""
-    for period_dict, target_dict, dates_dict in ts_split(data, targets, dates, args.train, args.val, args.test, args.K, make_tabular=True):
+    for period_dict, target_dict, dates_dict in ts_split(
+            data, targets, dates, args.train, args.val, args.test, args.K, 
+            make_tabular=True, return_tensor=False
+        ):
         period_start_date = dates_dict['train'][0][0]
         period_end_date = dates_dict['test'][-1]
         print(f'====== {period_start_date} to {period_end_date} =======')
@@ -91,7 +94,8 @@ def train():
         test_y = target_dict['test']
         test_acc = accuracy_score(test_y, test_pred)
         test_f1 = f1_score(test_y, test_pred, average='macro')  # TODO: maybe weighted? need discussion
-        print(f"test metrics: acc = {test_acc:.4f}, f1 = {test_f1:.4f}")
+        test_roc_auc = roc_auc_score(test_y, mlr.predict_proba(period_dict['test']), multi_class = 'ovr')
+        print(f"test metrics: acc = {test_acc:.4f}, f1 = {test_f1:.4f}, roc_auc = {test_roc_auc:.4f}")
 
         # log 
         # save model hyperparam to 

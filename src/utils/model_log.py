@@ -8,6 +8,9 @@ from typing import List
 import numpy as np
 import pandas as pd 
 
+import torch 
+import torch.nn as nn 
+
 # log predictions
 def log_predictions(predictions: np.ndarray, dates: List[str], result_path: str):
     """log into a pandas series"""
@@ -41,5 +44,23 @@ def log_baseline_params(best_c: float, start_date: str, end_date: str, model_pat
     # save 
     log_df.to_csv(save_name, index=False)
 
+def log_nn_params(args, start_date: str, end_date: str, model_path: str, selected_args: List=['scale', "gru_hidden"]):
+    """
+    log nn params
+    :param selected_args: the selected arguments to log
+    """
+    params_to_log = [getattr(args, arg) for arg in selected_args]
+    params_names = selected_args
+
+    # TODO: write/append to csv as above, replace best_c by params_names and content by params_to_log
+
 # ============ nn ===============
-# TODO:
+def log_nn_weights(model: nn.Module, start_date: str, end_date: str, model_path: str):
+    """store model weights"""
+    save_path = os.path.join(model_path, 'weights')
+    if not os.path.exists(save_path):
+        os.mkdir(save_path)
+    save_name = os.path.join(save_path, f'weights_{start_date}_{end_date}.pt')
+    
+    # save weights 
+    torch.save(model.to('cpu').state_dict(), save_name)

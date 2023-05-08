@@ -7,6 +7,7 @@ import os
 import pickle
 from typing import List, Tuple
 import numpy as np
+import torch
 
 # ============ methods ============
 def read_data(index_name: str, path: str) -> Tuple[np.ndarray, np.ndarray, List[str]]:
@@ -28,6 +29,7 @@ def ts_split(
     test: int = 40,
     K: int=5,
     make_tabular=False,
+    return_tensor=True,
 ) -> Tuple:
     """
     time series train test split
@@ -37,6 +39,7 @@ def ts_split(
     :param train, val, test: the number of days for train, val, and test data
     :param K: the number of folds for validation 
     :param make_tabular: True to make dataset tabular
+    :param return_tensor: True to convert to torch.Tensor
 
     :return generated slices of data, target, and dates packed in dict, with the following pairs:
         - "train": list of data/targets/dates of length K 
@@ -46,6 +49,11 @@ def ts_split(
     # flatten dataset to be tabular
     if make_tabular:
         data = data.reshape(len(data), -1)
+    
+    # for pytorch api
+    if return_tensor:
+        data = torch.tensor(data).float() # convert to float32
+        targets = torch.tensor(targets).long() # convert to long
     
     total_length = data.shape[0] 
     period_length = train + val * K + test
